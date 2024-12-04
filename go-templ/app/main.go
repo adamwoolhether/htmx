@@ -1,10 +1,5 @@
 package main
 
-/*
-- Better flash handling: how to get flashes from session directly in template?
-- Smooth progress bar transition, needed to use JS.
-- Web cannot delete single contact with checkbox with alpine and sweet confirm lib.
-*/
 import (
 	"context"
 	"fmt"
@@ -12,6 +7,8 @@ import (
 	"os"
 	"os/signal"
 	"time"
+
+	"github.com/adamwoolhether/htmx/go-templ/foundation/logger"
 )
 
 func main() {
