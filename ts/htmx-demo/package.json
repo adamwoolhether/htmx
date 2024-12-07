@@ -1,12 +1,19 @@
 {
   "name": "htmx-demo",
   "scripts": {
-    "dev": "bun run --watch src/server.tsx"
+    "dev": "bun run --watch src/server.tsx",
+    "lint": "eslint 'src/**/*.{css,html,ts,tsx}'",
+    "format": "prettier --write 'src/**/*.{css,html,ts,tsx}'"
   },
   "dependencies": {
     "hono": "^4.6.12"
   },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@eslint/js": "^9.16.0",
+    "@types/bun": "latest",
+    "eslint": "^9.16.0",
+    "globals": "^15.13.0",
+    "prettier": "^3.4.2",
+    "typescript-eslint": "^8.17.0"
   }
 }
