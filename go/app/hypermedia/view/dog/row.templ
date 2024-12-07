@@ -3,25 +3,25 @@ package dog
 import "github.com/adamwoolhether/htmx/go/business/dog"
 
 templ Rows(dogs []dog.Dog) {
-    for _, dog := range dogs {
-        @Row(dog)
-    }
+	for _, dog := range dogs {
+		@Row(dog)
+	}
 }
 
 templ Row(dog dog.Dog) {
-<tr class="on-hover">
-    <td>{ dog.Name }</td>
-    <td>{ dog.Breed }</td>
-    <td class="buttons">
-        <button
-        class="show-on-hover"
-        hx-delete={"/dog/" + dog.ID}
-        hx-confirm="Are you sure you want to delete this dog?"
-        hx-target="closest tr"
-        hx-swap="delete"
-        >
-        X
-        </button>
-    </td>
-</tr>
+	<tr class="on-hover">
+		<td>{ dog.Name }</td>
+		<td>{ dog.Breed }</td>
+		<td class="buttons">
+			<button
+				class="show-on-hover"
+				hx-delete={ "/dog/" + dog.ID }
+				hx-confirm="Are you sure you want to delete this dog?"
+				hx-target="closest tr"
+				hx-swap="delete"
+			>
+				X
+			</button>
+		</td>
+	</tr>
 }
