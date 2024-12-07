@@ -38,7 +38,7 @@ func WebApp(cfg WebAppConfig, routes RouteAdder, options ...func(opts *Options))
 	}
 
 	if opts.staticFS != nil {
-		app.HandleNoMiddleware(http.MethodGet, "", "/static/*", opts.staticFS)
+		app.ServeFS(opts.staticFS)
 	}
 
 	routes.Add(app, cfg)

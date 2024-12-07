@@ -1,16 +1,13 @@
 package mux
 
 import (
-	"context"
 	"net/http"
-
-	"github.com/adamwoolhether/htmx/go/foundation/web"
 )
 
 // Options represents optional parameters.
 type Options struct {
 	corsOrigin string
-	staticFS   web.Handler
+	staticFS   http.Handler
 }
 
 // WithCORS provides configuration options for CORS.
@@ -21,13 +18,8 @@ func WithCORS(origin string) func(opts *Options) {
 }
 
 func WithStaticFS(fs http.Handler) func(opts *Options) {
-	f := func(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
-		fs.ServeHTTP(w, r)
-
-		return nil
-	}
 
 	return func(opts *Options) {
-		opts.staticFS = f
+		opts.staticFS = fs
 	}
 }

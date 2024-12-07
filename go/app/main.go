@@ -8,6 +8,7 @@ import (
 	"os/signal"
 	"time"
 
+	"github.com/adamwoolhether/htmx/go/app/hypermedia"
 	"github.com/adamwoolhether/htmx/go/business/web/mux"
 	"github.com/adamwoolhether/htmx/go/foundation/logger"
 	"github.com/adamwoolhether/htmx/go/foundation/web"
@@ -39,7 +40,7 @@ func run(ctx context.Context, log *logger.Logger) error {
 			Build:    build,
 			Shutdown: shutdown,
 			Log:      log,
-		}, Routes())
+		}, Routes(), mux.WithStaticFS(hypermedia.StaticFS()))
 
 	api := http.Server{
 		Addr:    "localhost:42069",
@@ -86,16 +87,5 @@ type add struct{}
 
 // Add implements the RouteAdder interface.
 func (add) Add(app *web.App, cfg mux.WebAppConfig) {
-	// contactsCore := contacts.NewCore(cfg.Log)
-	//
-	// hypermedia.Routes(app, hypermedia.Config{
-	// 	Log:      cfg.Log,
-	// 	Session:  cfg.Session,
-	// 	Contacts: contactsCore,
-	// })
-	//
-	// dataapi.Routes(app, dataapi.Config{
-	// 	Log:      cfg.Log,
-	// 	Contacts: contactsCore,
-	// })
+	hypermedia.Routes(app)
 }

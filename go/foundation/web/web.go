@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"slices"
 	"syscall"
 	"time"
 
@@ -29,11 +30,11 @@ type App struct {
 	mux      *http.ServeMux
 	shutdown chan os.Signal
 	mw       []Middleware
+	group    string
 }
 
 // NewApp creates an App value that handle a set of routes for the application.
 func NewApp(shutdown chan os.Signal, mw ...Middleware) *App {
-
 	mux := http.NewServeMux()
 
 	return &App{
@@ -41,6 +42,37 @@ func NewApp(shutdown chan os.Signal, mw ...Middleware) *App {
 		shutdown: shutdown,
 		mw:       mw,
 	}
+}
+
+func (a *App) Group() *App {
+	return &App{
+		mux: a.mux,
+		mw:  slices.Clone(a.mw),
+	}
+}
+
+func (a *App) Mount(subRoute string) *App {
+	return &App{
+		mux:   a.mux,
+		mw:    slices.Clone(a.mw),
+		group: subRoute,
+	}
+}
+
+func (a *App) Use(mw ...Middleware) {
+	a.mw = append(a.mw, mw...)
+}
+
+func (a *App) Get(path string, fn Handler, mw ...Middleware) {
+	a.handle(http.MethodGet, a.group, path, fn, mw...)
+}
+
+func (a *App) Post(path string, fn Handler, mw ...Middleware) {
+	a.handle(http.MethodPost, a.group, path, fn, mw...)
+}
+
+func (a *App) Delete(path string, fn Handler, mw ...Middleware) {
+	a.handle(http.MethodDelete, a.group, path, fn, mw...)
 }
 
 // SignalShutdown is used to gracefully shut down the app when an integrity
@@ -52,6 +84,10 @@ func (a *App) SignalShutdown() {
 // ServeHTTP implements the http.Handler interface.
 func (a *App) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	a.mux.ServeHTTP(w, r)
+}
+
+func (a *App) ServeFS(handler http.Handler) {
+	a.mux.Handle("/", handler)
 }
 
 // EnableCORS enables CORS preflight requests to work in the middleware. It
@@ -103,12 +139,12 @@ func (a *App) HandleNoMiddleware(method string, group string, path string, handl
 	}
 	finalPath = fmt.Sprintf("%s %s", method, finalPath)
 
-	a.mux.HandleFunc(finalPath, h)
+	a.mux.HandleFunc(path, h)
 }
 
-// Handle sets a handler function for a given HTTP method and path pair
+// handle sets a handler function for a given HTTP method and path pair
 // to the application server mux.
-func (a *App) Handle(method string, group string, path string, handler Handler, mw ...Middleware) {
+func (a *App) handle(method string, group string, path string, handler Handler, mw ...Middleware) {
 	handler = wrapMiddleware(mw, handler)
 	handler = wrapMiddleware(a.mw, handler)
 
@@ -131,6 +167,7 @@ func (a *App) Handle(method string, group string, path string, handler Handler, 
 	if group != "" {
 		finalPath = "/" + group + path
 	}
+
 	finalPath = fmt.Sprintf("%s %s", method, finalPath)
 
 	a.mux.HandleFunc(finalPath, h)
