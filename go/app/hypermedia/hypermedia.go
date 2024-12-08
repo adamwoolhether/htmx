@@ -26,6 +26,10 @@ func StaticFS() http.Handler {
 func Routes(app *web.App) {
 	demoGrp := demo.NewGroup(dog.NewStore())
 	app.Get("/rows", demoGrp.DogRows)
+	app.Get("/form", demoGrp.Form)
 	app.Post("/dog", demoGrp.CreateDog)
+	app.Put("/select/{id}", demoGrp.SelectDog)
+	app.Put("/deselect", demoGrp.DeselectDog)
+	app.Put("/dog/{id}", demoGrp.UpdateDog)
 	app.Delete("/dog/{id}", demoGrp.DeleteDog)
 }

@@ -11,9 +11,22 @@ import (
 
 func RenderHTML(ctx context.Context, w http.ResponseWriter, component templ.Component, statusCode int) error {
 	setStatusCode(ctx, statusCode)
+
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	w.WriteHeader(statusCode)
 
 	return component.Render(ctx, w)
+}
+
+func RenderDelete(ctx context.Context, w http.ResponseWriter, statusCode int) error {
+	setStatusCode(ctx, statusCode)
+	w.WriteHeader(statusCode)
+
+	if _, err := w.Write(nil); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func RenderXML(ctx context.Context, w http.ResponseWriter, data any, statusCode int) error {
@@ -21,14 +34,14 @@ func RenderXML(ctx context.Context, w http.ResponseWriter, data any, statusCode 
 
 	w.Header().Set("Content-Type", HXMLMime)
 
-	//bytes, err := xml.MarshalIndent(data, "", "  ")
+	// bytes, err := xml.MarshalIndent(data, "", "  ")
 	bytes, err := xml.Marshal(data)
 	if err != nil {
 		return err
 	}
 
-	//fmt.Println("******************************************************************************")
-	//fmt.Println(string(bytes))
+	// fmt.Println("******************************************************************************")
+	// fmt.Println(string(bytes))
 
 	_, err = w.Write(bytes)
 	if err != nil {

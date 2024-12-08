@@ -10,7 +10,7 @@
 templ:
 	templ generate
 
-go:
+go-dev:
 	./run.sh
 
 bun:

@@ -71,6 +71,10 @@ func (a *App) Post(path string, fn Handler, mw ...Middleware) {
 	a.handle(http.MethodPost, a.group, path, fn, mw...)
 }
 
+func (a *App) Put(path string, fn Handler, mw ...Middleware) {
+	a.handle(http.MethodPut, a.group, path, fn, mw...)
+}
+
 func (a *App) Delete(path string, fn Handler, mw ...Middleware) {
 	a.handle(http.MethodDelete, a.group, path, fn, mw...)
 }

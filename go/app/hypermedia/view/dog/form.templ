@@ -1,0 +1,63 @@
+package dog
+
+import "github.com/adamwoolhether/htmx/go/business/dog"
+
+templ Form(selectedDog *dog.Dog) {
+<form
+    hx-disabled-elt="#submit-btn"
+    hx-on:htmx:after-request="this.reset()"
+    if selectedDog !=nil {
+        hx-put={"/dog/" + selectedDog.ID}
+    } else {
+        hx-post="/dog"
+        hx-target="tbody"
+        hx-swap="afterbegin"
+    }
+>
+    <div>
+        <label for="name">Name</label>
+        <input
+            id="name"
+            name="name"
+            required
+            size="30"
+            type="text"
+            if selectedDog != nil {
+                value={selectedDog.Name}
+            } else {
+                value=""
+            }
+        />
+    </div>
+    <div>
+        <label for="breed">Breed</label>
+        <input
+            id="breed"
+            name="breed"
+            required
+            size="30"
+            type="text"
+            if selectedDog != nil {
+                value={selectedDog.Breed}
+            } else {
+                value=""
+            }
+        />
+    </div>
+
+    <div class="buttons">
+        <button id="submit-btn">
+            if selectedDog != nil {
+                Update
+            } else {
+                Add
+            }
+        </button>
+        if selectedDog != nil {
+            <button hx-put="/deselect" hx-swap="none" type="button" >
+                Cancel
+            </button>
+        }
+    </div>
+</form>
+}

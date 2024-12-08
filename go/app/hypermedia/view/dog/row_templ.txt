@@ -1,4 +1,0 @@
-<tr class=\"on-hover\"><td>
-</td><td>
-</td><td class=\"buttons\"><button class=\"show-on-hover\" hx-delete=\"
-\" hx-confirm=\"Are you sure you want to delete this dog?\" hx-target=\"closest tr\" hx-swap=\"delete\">X</button></td></tr>
